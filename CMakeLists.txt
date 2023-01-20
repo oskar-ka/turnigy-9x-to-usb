@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.12)
+cmake_minimum_required(VERSION 3.13)
 include(pico_sdk_import.cmake)
 project(turnigy-9x-to-usb C CXX ASM)
 set(CMAKE_C_STANDARD 11)
@@ -10,12 +10,21 @@ add_executable(turnigy_9x_to_usb)
 
 #pico_generate_pio_header(motor_controller ${CMAKE_CURRENT_LIST_DIR}/pwm.pio)
 
-target_sources(turnigy_9x_to_usb PRIVATE t9xtu.c)
+target_sources(turnigy_9x_to_usb PUBLIC 
+	${CMAKE_CURRENT_LIST_DIR}/main.c
+	${CMAKE_CURRENT_LIST_DIR}/usb_descriptors.c
+	)
 
-target_link_libraries(turnigy_9x_to_usb PRIVATE
+target_include_directories(turnigy_9x_to_usb PUBLIC
+	${CMAKE_CURRENT_LIST_DIR}
+	)
+
+target_link_libraries(turnigy_9x_to_usb PUBLIC
 	pico_stdlib
-	#hardware_pio
+	tinyusb_device
+	tinyusb_board
 	hardware_gpio
+	#hardware_pio
 	#hardware_adc
 	)
 
